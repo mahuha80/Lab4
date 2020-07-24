@@ -1,13 +1,18 @@
 package com.example.vinhntph08047_lab4;
 
+import android.app.SearchManager;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements RecycleViewAdapte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        configToolbar();
         setContentView(R.layout.activity_main);
         rv = findViewById(R.id.rv);
         swipeRefreshLayout = findViewById(R.id.sr);
@@ -33,7 +39,25 @@ public class MainActivity extends AppCompatActivity implements RecycleViewAdapte
         swipeRefreshLayout.setOnRefreshListener(() -> {
             page++;
             callAPI();
+            swipeRefreshLayout.setRefreshing(false);
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.item, menu);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void configToolbar() {
 
     }
 
