@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,7 +23,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements RecycleViewAdapter.OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements RecycleViewAdapter.OnItemClickListener, SearchView.OnQueryTextListener {
     private List<RootModel.Photos.Photo> list = new ArrayList<>();
     private RecyclerView rv;
     private RecycleViewAdapter recycleViewAdapter;
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements RecycleViewAdapte
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(this);
         return true;
     }
 
@@ -87,5 +90,15 @@ public class MainActivity extends AppCompatActivity implements RecycleViewAdapte
         Intent intent = new Intent(this, DetailAcitivy.class);
         intent.putExtra("KEY", photo.getUrlL());
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
     }
 }
