@@ -1,4 +1,4 @@
-package com.example.vinhntph08047_lab4;
+package com.example.vinhntph08047_lab4.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

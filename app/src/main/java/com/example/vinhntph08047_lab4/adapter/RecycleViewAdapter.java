@@ -1,4 +1,4 @@
-package com.example.vinhntph08047_lab4;
+package com.example.vinhntph08047_lab4.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.vinhntph08047_lab4.model.RootModel;
+import com.example.vinhntph08047_lab4.R;
 
 import java.util.List;
 
@@ -49,7 +51,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         }
 
         public void bindItem(int position) {
-            Glide.with(itemView).load(list.get(position).getUrlL()).into(imageView);
+            Glide.with(itemView).load(list.get(position).getUrlM()).into(imageView);
             imageView.setOnClickListener(view -> {
                 onItemClickListener.onImageClicked(list.get(position));
             });

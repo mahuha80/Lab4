@@ -1,9 +1,12 @@
-package com.example.vinhntph08047_lab4;
+package com.example.vinhntph08047_lab4.activity;
 
 import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -12,9 +15,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.view.MenuItemCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.example.vinhntph08047_lab4.R;
+import com.example.vinhntph08047_lab4.adapter.RecycleViewAdapter;
+import com.example.vinhntph08047_lab4.fragment.CategoryFragment;
+import com.example.vinhntph08047_lab4.model.RootModel;
+import com.example.vinhntph08047_lab4.net.RetrofitService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +71,37 @@ public class MainActivity extends AppCompatActivity implements RecycleViewAdapte
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_home:
+                swipeRefreshLayout.setRefreshing(true);
+                callAPI();
+                new Handler().postDelayed(() -> {
+                    swipeRefreshLayout.setRefreshing(false);
+                }, 1500);
+                break;
+            case R.id.category:
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.container, CategoryFragment.newInstance(), CategoryFragment.TAG)
+                        .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                        .addToBackStack(null).commit();
+                break;
+            case R.id.fb:
+                goToFacebook();
+                break;
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void goToFacebook() {
+        try {
+            getPackageManager()
+                    .getPackageInfo("com.facebook.katana", 0); //Checks if FB is even installed.
+            new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://www.facebook.com/vinhnt0111"));
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void configToolbar() {
@@ -77,14 +118,14 @@ public class MainActivity extends AppCompatActivity implements RecycleViewAdapte
     }
 
     private void onSuccess(RootModel rootModel) {
-        Toast.makeText(this, Thread.currentThread().toString(), Toast.LENGTH_SHORT).show();
         list = rootModel.getPhotos().getPhoto();
         recycleViewAdapter = new RecycleViewAdapter(MainActivity.this, list, MainActivity.this::onImageClicked);
         rv.setAdapter(recycleViewAdapter);
-        rv.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
+        rv.setLayoutManager(new GridLayoutManager(this, 2));
     }
 
     private void onFailure(Throwable throwable) {
+        Toast.makeText(this, throwable.toString(), Toast.LENGTH_LONG).show();
         Toast.makeText(this, "Please connect wifi", Toast.LENGTH_SHORT).show();
     }
 
@@ -109,5 +150,23 @@ public class MainActivity extends AppCompatActivity implements RecycleViewAdapte
     protected void onDestroy() {
         super.onDestroy();
         compositeDisposable.clear();
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager fm = getSupportFragmentManager();
+        for (Fragment frag : fm.getFragments()) {
+            if (frag.isVisible()) {
+                FragmentManager childFm = frag.getChildFragmentManager();
+                if (childFm.getBackStackEntryCount() > 0) {
+                    childFm.popBackStack();
+                    return;
+                }
+            }
+        }
+        if (!getSupportActionBar().isShowing()) {
+            getSupportActionBar().show();
+        }
+        super.onBackPressed();
     }
 }

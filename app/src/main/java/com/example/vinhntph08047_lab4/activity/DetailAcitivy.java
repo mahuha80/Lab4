@@ -1,13 +1,13 @@
-package com.example.vinhntph08047_lab4;
+package com.example.vinhntph08047_lab4.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.vinhntph08047_lab4.R;
 
 public class DetailAcitivy extends AppCompatActivity {
     ImageView img;

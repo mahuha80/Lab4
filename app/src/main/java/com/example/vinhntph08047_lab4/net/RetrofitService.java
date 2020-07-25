@@ -1,4 +1,6 @@
-package com.example.vinhntph08047_lab4;
+package com.example.vinhntph08047_lab4.net;
+
+import com.example.vinhntph08047_lab4.api.APIService;
 
 import java.util.concurrent.TimeUnit;
 

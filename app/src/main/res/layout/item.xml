@@ -13,5 +13,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars"
-        android:layout_margin="8dp"/>
+        android:layout_margin="8dp"
+        android:scaleType="fitCenter"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
