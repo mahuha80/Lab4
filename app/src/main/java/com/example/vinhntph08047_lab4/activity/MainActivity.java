@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AbsListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements LoadMoreAdapter.O
     private SwipeRefreshLayout swipeRefreshLayout;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private boolean isLoading = false;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements LoadMoreAdapter.O
         configToolbar();
         setContentView(R.layout.activity_main);
         rv = findViewById(R.id.rv);
+        progressBar = findViewById(R.id.progress_main);
         swipeRefreshLayout = findViewById(R.id.sr);
         callAPI();
         swipeRefreshLayout.setOnRefreshListener(() -> {
@@ -129,19 +134,24 @@ public class MainActivity extends AppCompatActivity implements LoadMoreAdapter.O
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                    isLoading = true;
+                    progressBar.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int totalItemCount = gridLayoutManager.getItemCount();
-                int lastVisibleItem = gridLayoutManager.findLastVisibleItemPosition();
-                if (!isLoading && totalItemCount <= (lastVisibleItem + 20)) {
-                    list.add(null);
-                    loadMoreAdapter.notifyItemInserted(list.size()-1);
+                if (gridLayoutManager.findLastCompletelyVisibleItemPosition() == list.size() - 1) {
                     loadMore();
-                    isLoading = true;
                 }
+//                int currentItem = gridLayoutManager.getChildCount();
+//                int totalItem = gridLayoutManager.getItemCount();
+//                int scrollOutItems = gridLayoutManager.findFirstVisibleItemPosition() + 5;
+//                if (isLoading && (currentItem + scrollOutItems == totalItem)) {
+//                    loadMore();
+//                }
             }
         });
     }
@@ -159,11 +169,10 @@ public class MainActivity extends AppCompatActivity implements LoadMoreAdapter.O
         Toast.makeText(this, "End of galleries", Toast.LENGTH_SHORT).show();
     }
 
-    private void loadMoreSuccess(RootModel rootModel) throws InterruptedException {
-        Thread.sleep(2000);
-        list.remove(list.size() - 1);
-        loadMoreAdapter.notifyItemRemoved(list.size() - 1);
+    private void loadMoreSuccess(RootModel rootModel) {
         List<RootModel.Photos.Photo> list = rootModel.getPhotos().getPhoto();
+        progressBar.setVisibility(View.INVISIBLE);
+        isLoading = false;
         loadMoreAdapter.addItem(list);
     }
 

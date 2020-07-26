@@ -70,6 +70,11 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.OnItem
     }
 
     private void populateItem() {
+        galleriesModels.add(new GalleriesModel("72157662388372890","Your Best Shot 2015: Starry Night"));
+        galleriesModels.add(new GalleriesModel("72157662518421935","Monochrome\n"));
+        galleriesModels.add(new GalleriesModel("72157661862021010","Your Best Shot 2015: Less is More\n"));
+        galleriesModels.add(new GalleriesModel("72157661841075321","Easy as Pie\n"));
+        galleriesModels.add(new GalleriesModel("72157661264572079","Christmas Cookies\n"));
         galleriesModels.add(new GalleriesModel("72157715102362628", "Summer 2020"));
         galleriesModels.add(new GalleriesModel("72157714905095181", "Pride 2020"));
         galleriesModels.add(new GalleriesModel("72157714941979913", "Flickr Friday - Spoon"));
