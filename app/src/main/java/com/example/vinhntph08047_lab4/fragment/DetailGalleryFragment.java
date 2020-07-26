@@ -1,6 +1,7 @@
 package com.example.vinhntph08047_lab4.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.vinhntph08047_lab4.R;
+import com.example.vinhntph08047_lab4.activity.DetailAcitivy;
 import com.example.vinhntph08047_lab4.adapter.RecycleViewAdapter;
 import com.example.vinhntph08047_lab4.model.RootModel;
 import com.example.vinhntph08047_lab4.net.RetrofitService;
@@ -65,7 +67,6 @@ public class DetailGalleryFragment extends Fragment implements RecycleViewAdapte
         if (getArguments() != null) {
             gallery_id = getArguments().getString(ARG_PARAM1);
         }
-        Toast.makeText(context, gallery_id, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -118,6 +119,8 @@ public class DetailGalleryFragment extends Fragment implements RecycleViewAdapte
 
     @Override
     public void onImageClicked(RootModel.Photos.Photo photo) {
-        Toast.makeText(context, photo.getUrlT().toString(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(), DetailAcitivy.class);
+        intent.putExtra("KEY", photo.getUrlL());
+        startActivity(intent);
     }
 }

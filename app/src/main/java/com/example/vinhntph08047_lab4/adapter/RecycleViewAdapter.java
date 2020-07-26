@@ -10,8 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.vinhntph08047_lab4.model.RootModel;
 import com.example.vinhntph08047_lab4.R;
+import com.example.vinhntph08047_lab4.model.RootModel;
 
 import java.util.List;
 
@@ -42,6 +42,10 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         return list.size();
     }
 
+    public interface OnItemClickListener {
+        void onImageClicked(RootModel.Photos.Photo photo);
+    }
+
     public class RecycleViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
 
@@ -56,9 +60,5 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
                 onItemClickListener.onImageClicked(list.get(position));
             });
         }
-    }
-
-    public interface OnItemClickListener {
-        void onImageClicked(RootModel.Photos.Photo photo);
     }
 }

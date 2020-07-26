@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.vinhntph08047_lab4.R;
-import com.example.vinhntph08047_lab4.adapter.RecycleViewAdapter;
+import com.example.vinhntph08047_lab4.adapter.LoadMoreAdapter;
 import com.example.vinhntph08047_lab4.fragment.CategoryFragment;
 import com.example.vinhntph08047_lab4.model.RootModel;
 import com.example.vinhntph08047_lab4.net.RetrofitService;
@@ -36,13 +36,14 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity implements RecycleViewAdapter.OnItemClickListener, SearchView.OnQueryTextListener {
+public class MainActivity extends AppCompatActivity implements LoadMoreAdapter.OnItemClickListener, SearchView.OnQueryTextListener {
     private List<RootModel.Photos.Photo> list = new ArrayList<>();
     private RecyclerView rv;
-    private RecycleViewAdapter recycleViewAdapter;
+    private LoadMoreAdapter loadMoreAdapter;
     private int page = 1;
     private SwipeRefreshLayout swipeRefreshLayout;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private boolean isLoading = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,13 +120,54 @@ public class MainActivity extends AppCompatActivity implements RecycleViewAdapte
 
     private void onSuccess(RootModel rootModel) {
         list = rootModel.getPhotos().getPhoto();
-        recycleViewAdapter = new RecycleViewAdapter(MainActivity.this, list, MainActivity.this::onImageClicked);
-        rv.setAdapter(recycleViewAdapter);
-        rv.setLayoutManager(new GridLayoutManager(this, 2));
+        loadMoreAdapter = new LoadMoreAdapter(MainActivity.this, list, MainActivity.this::onImageClicked);
+        rv.setAdapter(loadMoreAdapter);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        rv.setLayoutManager(gridLayoutManager);
+        rv.setHasFixedSize(true);
+        rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int totalItemCount = gridLayoutManager.getItemCount();
+                int lastVisibleItem = gridLayoutManager.findLastVisibleItemPosition();
+                if (!isLoading && totalItemCount <= (lastVisibleItem + 20)) {
+                    list.add(null);
+                    loadMoreAdapter.notifyItemInserted(list.size()-1);
+                    loadMore();
+                    isLoading = true;
+                }
+            }
+        });
+    }
+
+    private void loadMore() {
+        page++;
+        Disposable disposable = RetrofitService.getInstance().getData(String.valueOf(page))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(this::loadMoreSuccess, this::loadmoreFailure);
+        compositeDisposable.add(disposable);
+    }
+
+    private void loadmoreFailure(Throwable throwable) {
+        Toast.makeText(this, "End of galleries", Toast.LENGTH_SHORT).show();
+    }
+
+    private void loadMoreSuccess(RootModel rootModel) throws InterruptedException {
+        Thread.sleep(2000);
+        list.remove(list.size() - 1);
+        loadMoreAdapter.notifyItemRemoved(list.size() - 1);
+        List<RootModel.Photos.Photo> list = rootModel.getPhotos().getPhoto();
+        loadMoreAdapter.addItem(list);
     }
 
     private void onFailure(Throwable throwable) {
-        Toast.makeText(this, throwable.toString(), Toast.LENGTH_LONG).show();
         Toast.makeText(this, "Please connect wifi", Toast.LENGTH_SHORT).show();
     }
 
