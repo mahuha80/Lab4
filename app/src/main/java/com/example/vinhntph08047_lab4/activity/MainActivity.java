@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements LoadMoreAdapter.O
         swipeRefreshLayout = findViewById(R.id.sr);
         callAPI();
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            page++;
             callAPI();
             swipeRefreshLayout.setRefreshing(false);
         });
