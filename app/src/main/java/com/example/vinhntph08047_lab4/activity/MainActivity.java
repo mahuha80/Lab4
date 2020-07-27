@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.vinhntph08047_lab4.Constant;
 import com.example.vinhntph08047_lab4.R;
 import com.example.vinhntph08047_lab4.adapter.LoadMoreAdapter;
 import com.example.vinhntph08047_lab4.fragment.CategoryFragment;
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements LoadMoreAdapter.O
     private List<RootModel.Photos.Photo> list = new ArrayList<>();
     private RecyclerView rv;
     private LoadMoreAdapter loadMoreAdapter;
-    private int page = 1;
+    private int page = 2;
     private SwipeRefreshLayout swipeRefreshLayout;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private boolean isLoading = false;
@@ -182,7 +183,9 @@ public class MainActivity extends AppCompatActivity implements LoadMoreAdapter.O
     @Override
     public void onImageClicked(RootModel.Photos.Photo photo) {
         Intent intent = new Intent(this, DetailAcitivy.class);
-        intent.putExtra("KEY", photo.getUrlL());
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Constant.OBJECT_KEY, photo);
+        intent.putExtra(Constant.BUNDLE_KEY, bundle);
         startActivity(intent);
     }
 

@@ -3,6 +3,7 @@ package com.example.vinhntph08047_lab4.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class RootModel {
@@ -36,7 +37,7 @@ public class RootModel {
             this.photo = photo;
         }
 
-        public class Photo {
+        public class Photo implements Serializable {
             @SerializedName("id")
             @Expose
             private String id;
