@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -41,8 +43,56 @@ public class DetailAcitivy extends AppCompatActivity {
         if (bundle != null) {
             photo = (RootModel.Photos.Photo) bundle.getSerializable(Constant.OBJECT_KEY);
             Glide.with(this).load(photo.getUrlM()).into(img);
+            Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.image_anim);
+            img.startAnimation(animation);
         }
         View sheet_view = LayoutInflater.from(this).inflate(R.layout.bottom_sheet, bottomSheetLayout, false);
+        img.setOnLongClickListener(view -> {
+            bottomSheetLayout.showWithSheetView(sheet_view);
+            return true;
+        });
+        initView(sheet_view);
+        actionDownloadAndSave();
+    }
+
+    private void actionDownloadAndSave() {
+
+        tvShare.setOnClickListener(view -> {
+            bottomSheetLayout.dismissSheet();
+        });
+        tvUrlM.setOnClickListener(view -> {
+            downloadImageAsync = new DownloadImageAsync(this);
+            downloadImageAsync.execute(photo.getUrlM());
+            bottomSheetLayout.dismissSheet();
+        });
+        tvUrlSq.setOnClickListener(view -> {
+            downloadImageAsync = new DownloadImageAsync(this);
+            downloadImageAsync.execute(photo.getUrlSq());
+            bottomSheetLayout.dismissSheet();
+
+        });
+        tvUrlT.setOnClickListener(view -> {
+            downloadImageAsync = new DownloadImageAsync(this);
+            downloadImageAsync.execute(photo.getUrlT());
+            bottomSheetLayout.dismissSheet();
+
+        });
+        tvUrlS.setOnClickListener(view -> {
+            downloadImageAsync = new DownloadImageAsync(this);
+            downloadImageAsync.execute(photo.getUrlS());
+            bottomSheetLayout.dismissSheet();
+
+        });
+        tvUrlZ.setOnClickListener(view -> {
+            downloadImageAsync = new DownloadImageAsync(this);
+            downloadImageAsync.execute(photo.getUrlZ());
+            bottomSheetLayout.dismissSheet();
+
+        });
+
+    }
+
+    private void initView(View sheet_view) {
         tvShare = sheet_view.findViewById(R.id.tv_share);
         tvSet = sheet_view.findViewById(R.id.tv_set);
         tvUrlSq = sheet_view.findViewById(R.id.tv_url_sq);
@@ -50,42 +100,5 @@ public class DetailAcitivy extends AppCompatActivity {
         tvUrlS = sheet_view.findViewById(R.id.tv_url_s);
         tvUrlM = sheet_view.findViewById(R.id.tv_url_m);
         tvUrlZ = sheet_view.findViewById(R.id.tv_url_z);
-        img.setOnLongClickListener(view -> {
-            bottomSheetLayout.showWithSheetView(sheet_view);
-            return true;
-        });
-        tvShare.setOnClickListener(view -> {
-            bottomSheetLayout.dismissSheet();
-        });
-        tvUrlM.setOnClickListener(view -> {
-            downloadImageAsync = new DownloadImageAsync(this, img);
-            downloadImageAsync.execute(photo.getUrlM());
-            bottomSheetLayout.dismissSheet();
-        });
-        tvUrlSq.setOnClickListener(view -> {
-            downloadImageAsync = new DownloadImageAsync(this, img);
-            downloadImageAsync.execute(photo.getUrlSq());
-            bottomSheetLayout.dismissSheet();
-
-        });
-        tvUrlT.setOnClickListener(view -> {
-            downloadImageAsync = new DownloadImageAsync(this, img);
-            downloadImageAsync.execute(photo.getUrlT());
-            bottomSheetLayout.dismissSheet();
-
-        });
-        tvUrlS.setOnClickListener(view -> {
-            downloadImageAsync = new DownloadImageAsync(this, img);
-            downloadImageAsync.execute(photo.getUrlS());
-            bottomSheetLayout.dismissSheet();
-
-        });
-        tvUrlZ.setOnClickListener(view -> {
-            downloadImageAsync = new DownloadImageAsync(this, img);
-            downloadImageAsync.execute(photo.getUrlZ());
-            bottomSheetLayout.dismissSheet();
-
-        });
-
     }
 }
