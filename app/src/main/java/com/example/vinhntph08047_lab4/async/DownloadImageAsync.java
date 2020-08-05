@@ -59,6 +59,7 @@ public class DownloadImageAsync extends AsyncTask<String, Integer, Bitmap> {
      * //                    "Image of bird"
      * //            );
      * //            Toast.makeText(context, "Done!", Toast.LENGTH_SHORT).show();
+     *
      * @param bitmap
      */
     @Override
