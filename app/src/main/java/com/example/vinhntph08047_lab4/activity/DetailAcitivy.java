@@ -1,13 +1,19 @@
 package com.example.vinhntph08047_lab4.activity;
 
+import android.app.WallpaperManager;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +23,8 @@ import com.example.vinhntph08047_lab4.R;
 import com.example.vinhntph08047_lab4.async.DownloadImageAsync;
 import com.example.vinhntph08047_lab4.model.RootModel;
 import com.flipboard.bottomsheet.BottomSheetLayout;
+
+import java.io.IOException;
 
 public class DetailAcitivy extends AppCompatActivity {
     private ImageView img;
@@ -56,7 +64,31 @@ public class DetailAcitivy extends AppCompatActivity {
     }
 
     private void actionDownloadAndSave() {
+        tvShare.setOnClickListener(view -> {
+            Bitmap icon = img.getDrawingCache();
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.TITLE, "title");
+            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+            Uri uri = getContentResolver().insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                    values);
+            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+            sharingIntent.setType("image/*");
+            sharingIntent.putExtra(Intent.EXTRA_STREAM, uri);
 
+            startActivity(Intent.createChooser(sharingIntent, "Share with"));
+        });
+        tvSet.setOnClickListener(view -> {
+            img.buildDrawingCache();
+            Bitmap bmap = img.getDrawingCache();
+            WallpaperManager m = WallpaperManager.getInstance(this);
+            bottomSheetLayout.dismissSheet();
+            Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
+            try {
+                m.setBitmap(bmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
         tvShare.setOnClickListener(view -> {
             bottomSheetLayout.dismissSheet();
         });

@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -34,7 +33,7 @@ import com.example.vinhntph08047_lab4.net.RetrofitService;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -116,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements LoadMoreAdapter.O
 
     @SuppressLint("CheckResult")
     private void callAPI() {
-        Observable<RootModel> observable = RetrofitService.getInstance().getData(String.valueOf(page));
+        Single<RootModel> observable = RetrofitService.getInstance().getData(String.valueOf(page));
         Disposable disposable = observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::onSuccess, this::onFailure);
@@ -129,29 +128,23 @@ public class MainActivity extends AppCompatActivity implements LoadMoreAdapter.O
         rv.setAdapter(loadMoreAdapter);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         rv.setLayoutManager(gridLayoutManager);
-        rv.setHasFixedSize(true);
         rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                    isLoading = true;
-                    progressBar.setVisibility(View.VISIBLE);
-                }
             }
 
             @Override
+
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (gridLayoutManager.findLastCompletelyVisibleItemPosition() == list.size() - 1) {
-                    loadMore();
+                if (!isLoading) {
+                    if (gridLayoutManager.findLastCompletelyVisibleItemPosition() == list.size() - 1) {
+                        progressBar.setVisibility(View.VISIBLE);
+                        loadMore();
+                        isLoading = true;
+                    }
                 }
-//                int currentItem = gridLayoutManager.getChildCount();
-//                int totalItem = gridLayoutManager.getItemCount();
-//                int scrollOutItems = gridLayoutManager.findFirstVisibleItemPosition() + 5;
-//                if (isLoading && (currentItem + scrollOutItems == totalItem)) {
-//                    loadMore();
-//                }
             }
         });
     }
@@ -171,9 +164,11 @@ public class MainActivity extends AppCompatActivity implements LoadMoreAdapter.O
 
     private void loadMoreSuccess(RootModel rootModel) {
         List<RootModel.Photos.Photo> list = rootModel.getPhotos().getPhoto();
-        progressBar.setVisibility(View.INVISIBLE);
-        isLoading = false;
-        loadMoreAdapter.addItem(list);
+        if (isLoading) {
+            progressBar.setVisibility(View.INVISIBLE);
+            loadMoreAdapter.addItem(list);
+            isLoading = false;
+        }
     }
 
     private void onFailure(Throwable throwable) {
