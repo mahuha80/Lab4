@@ -4,6 +4,7 @@ import android.app.WallpaperManager;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -22,6 +23,9 @@ import com.example.vinhntph08047_lab4.Constant;
 import com.example.vinhntph08047_lab4.R;
 import com.example.vinhntph08047_lab4.async.DownloadImageAsync;
 import com.example.vinhntph08047_lab4.model.RootModel;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareDialog;
 import com.flipboard.bottomsheet.BottomSheetLayout;
 
 import java.io.IOException;
@@ -54,7 +58,7 @@ public class DetailAcitivy extends AppCompatActivity {
             Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.image_anim);
             img.startAnimation(animation);
         }
-        View sheet_view = LayoutInflater.from(this).inflate(R.layout.bottom_sheet, bottomSheetLayout, false);
+        View sheet_view = LayoutInflater.from(this).inflate(R.layout.bottom_sheet, null, false);
         img.setOnLongClickListener(view -> {
             bottomSheetLayout.showWithSheetView(sheet_view);
             return true;
@@ -90,6 +94,15 @@ public class DetailAcitivy extends AppCompatActivity {
             }
         });
         tvShare.setOnClickListener(view -> {
+            Bitmap image = ((BitmapDrawable) (img.getDrawable())).getBitmap();
+            SharePhoto photo = new SharePhoto.Builder()
+                    .setBitmap(image)
+                    .build();
+            SharePhotoContent content = new SharePhotoContent.Builder()
+                    .addPhoto(photo)
+                    .build();
+            ShareDialog shareDialog = new ShareDialog(this);
+            shareDialog.show(content, ShareDialog.Mode.AUTOMATIC);
             bottomSheetLayout.dismissSheet();
         });
         tvUrlM.setOnClickListener(view -> {

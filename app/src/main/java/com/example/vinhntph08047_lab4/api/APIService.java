@@ -16,6 +16,6 @@ public interface APIService {
     Single<RootModel> getGalleries(@Query("gallery_id") String galleryId);
 
     //empty link
-    @GET()
-    Single<RootModel> getImages();
+    @GET("services/rest/?method=flickr.photos.search&api_key=41de2f631e450643c7933eb12a0c1242&format=json&extras=views%2C+media%2C+path_alias%2C+url_sq%2C+url_t%2C+url_s%2C+url_q%2C+url_m%2C+url_n%2C+url_z%2C+url_c%2C+url_l%2C+url_o&per_page=14&nojsoncallback=1")
+    Single<RootModel> searchImage(@Query("text") String text);
 }

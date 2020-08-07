@@ -75,7 +75,6 @@ public class DownloadImageAsync extends AsyncTask<String, Integer, Bitmap> {
     }
 
     public void saveImage(Bitmap segg) {
-
         OutputStream fOut = null;
         Random generator = new Random();
         int n = 10000;

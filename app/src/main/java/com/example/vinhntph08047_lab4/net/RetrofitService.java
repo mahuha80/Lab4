@@ -1,6 +1,8 @@
 package com.example.vinhntph08047_lab4.net;
 
 import com.example.vinhntph08047_lab4.api.APIService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.concurrent.TimeUnit;
 
@@ -13,12 +15,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitService {
     public static APIService apiService;
     public static OkHttpClient okHttpClient;
+    private static Gson gson = new GsonBuilder()
+            .setLenient()
+            .create();
 
     public static APIService getInstance() {
         if (apiService == null) {
             apiService = new Retrofit.Builder()
                     .baseUrl(APIService.BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .client(getOkHttpClient())
                     .build().create(APIService.class);

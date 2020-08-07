@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -70,11 +69,11 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.OnItem
     }
 
     private void populateItem() {
-        galleriesModels.add(new GalleriesModel("72157662388372890","Your Best Shot 2015: Starry Night"));
-        galleriesModels.add(new GalleriesModel("72157662518421935","Monochrome\n"));
-        galleriesModels.add(new GalleriesModel("72157661862021010","Your Best Shot 2015: Less is More\n"));
-        galleriesModels.add(new GalleriesModel("72157661841075321","Easy as Pie\n"));
-        galleriesModels.add(new GalleriesModel("72157661264572079","Christmas Cookies\n"));
+        galleriesModels.add(new GalleriesModel("72157662388372890", "Your Best Shot 2015: Starry Night"));
+        galleriesModels.add(new GalleriesModel("72157662518421935", "Monochrome\n"));
+        galleriesModels.add(new GalleriesModel("72157661862021010", "Your Best Shot 2015: Less is More\n"));
+        galleriesModels.add(new GalleriesModel("72157661841075321", "Easy as Pie\n"));
+        galleriesModels.add(new GalleriesModel("72157661264572079", "Christmas Cookies\n"));
         galleriesModels.add(new GalleriesModel("72157715102362628", "Summer 2020"));
         galleriesModels.add(new GalleriesModel("72157714905095181", "Pride 2020"));
         galleriesModels.add(new GalleriesModel("72157714941979913", "Flickr Friday - Spoon"));
@@ -84,24 +83,6 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.OnItem
         galleriesModels.add(new GalleriesModel("72157713917091727", "Flickr Friday - Pet Love"));
         galleriesModels.add(new GalleriesModel("72157712544669811", "Close Up: A Your Best Shot 2019 Gallery"));
         galleriesModels.add(new GalleriesModel("72157712270801873", "Top Photos From The UK in 2019"));
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Toast.makeText(context, "onDestroy_parentfragment", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Toast.makeText(context, "onDestroyView_parentfragment", Toast.LENGTH_SHORT).show();
     }
 
     @Override

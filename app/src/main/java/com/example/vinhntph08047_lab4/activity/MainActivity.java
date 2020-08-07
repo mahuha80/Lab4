@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,6 +39,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity implements LoadMoreAdapter.OnItemClickListener, SearchView.OnQueryTextListener {
+
     private List<RootModel.Photos.Photo> list = new ArrayList<>();
     private RecyclerView rv;
     private LoadMoreAdapter loadMoreAdapter;
@@ -80,9 +80,7 @@ public class MainActivity extends AppCompatActivity implements LoadMoreAdapter.O
             case R.id.action_home:
                 swipeRefreshLayout.setRefreshing(true);
                 callAPI();
-                new Handler().postDelayed(() -> {
-                    swipeRefreshLayout.setRefreshing(false);
-                }, 1500);
+                swipeRefreshLayout.setRefreshing(false);
                 break;
             case R.id.category:
                 getSupportFragmentManager()
@@ -186,7 +184,21 @@ public class MainActivity extends AppCompatActivity implements LoadMoreAdapter.O
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        Disposable disposable = RetrofitService.getInstance()
+                .searchImage(query)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::onSearchSuccess, this::OnSearchFailure);
+        compositeDisposable.add(disposable);
         return false;
+    }
+
+    private void onSearchSuccess(RootModel rootModel) {
+        loadMoreAdapter.replaceItem(rootModel.getPhotos().getPhoto());
+    }
+
+    private void OnSearchFailure(Throwable throwable) {
+        Toast.makeText(this, "please connect wifi", Toast.LENGTH_SHORT).show();
     }
 
     @Override

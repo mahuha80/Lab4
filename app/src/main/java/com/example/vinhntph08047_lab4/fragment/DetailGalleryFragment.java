@@ -104,17 +104,11 @@ public class DetailGalleryFragment extends Fragment implements RecycleViewAdapte
         Toast.makeText(context, "Please connect wifi :)", Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Toast.makeText(context, "destroy view", Toast.LENGTH_SHORT).show();
-    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         compositeDisposable.clear();
-        Toast.makeText(context, "destroy ", Toast.LENGTH_SHORT).show();
     }
 
     @Override

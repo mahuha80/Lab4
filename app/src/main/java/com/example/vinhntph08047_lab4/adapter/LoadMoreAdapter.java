@@ -63,6 +63,12 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemRangeChanged(last_size, list.size() - 1);
     }
 
+    public void replaceItem(List<RootModel.Photos.Photo> list) {
+        this.list.clear();
+        this.list.addAll(list);
+        notifyDataSetChanged();
+    }
+
     public interface OnItemClickListener {
         void onImageClicked(RootModel.Photos.Photo photo);
     }
