@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.vinhntph08047_lab4.Constant;
 import com.example.vinhntph08047_lab4.R;
 import com.example.vinhntph08047_lab4.activity.DetailAcitivy;
 import com.example.vinhntph08047_lab4.adapter.RecycleViewAdapter;
@@ -114,7 +115,9 @@ public class DetailGalleryFragment extends Fragment implements RecycleViewAdapte
     @Override
     public void onImageClicked(RootModel.Photos.Photo photo) {
         Intent intent = new Intent(getActivity(), DetailAcitivy.class);
-        intent.putExtra("KEY", photo.getUrlL());
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Constant.OBJECT_KEY, photo);
+        intent.putExtra(Constant.BUNDLE_KEY, bundle);
         startActivity(intent);
     }
 }

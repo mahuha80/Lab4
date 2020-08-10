@@ -89,7 +89,7 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.OnItem
     public void onCategoryClicked(GalleriesModel galleriesModel) {
         getChildFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                .setCustomAnimations(R.anim.left_to_right, R.anim.right_to_left)
                 .add(R.id.container_category, DetailGalleryFragment.newInstance(galleriesModel.getGalleries_id()))
                 .addToBackStack(DetailGalleryFragment.TAG)
                 .commit();

@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements LoadMoreAdapter.O
                 getSupportFragmentManager()
                         .beginTransaction()
                         .add(R.id.container, CategoryFragment.newInstance(), CategoryFragment.TAG)
-                        .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                        .setCustomAnimations(R.anim.left_to_right, R.anim.right_to_left)
                         .addToBackStack(null).commit();
                 break;
             case R.id.fb:

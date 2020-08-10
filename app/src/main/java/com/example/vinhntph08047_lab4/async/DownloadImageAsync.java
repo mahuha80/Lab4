@@ -125,8 +125,6 @@ public class DownloadImageAsync extends AsyncTask<String, Integer, Bitmap> {
         Toast.makeText(context,
                 file.getAbsolutePath(),
                 Toast.LENGTH_LONG).show();
-        String PRIMARY_CHANNEL_ID = "primary_notification_channel";
-
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
