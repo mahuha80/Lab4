@@ -180,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements LoadMoreAdapter.O
         bundle.putSerializable(Constant.OBJECT_KEY, photo);
         intent.putExtra(Constant.BUNDLE_KEY, bundle);
         startActivity(intent);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     @Override

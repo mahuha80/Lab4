@@ -1,15 +1,20 @@
 package com.example.vinhntph08047_lab4.async;
 
-import android.content.ContentResolver;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.widget.Toast;
+
+import androidx.core.app.NotificationCompat;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -25,9 +30,18 @@ import java.util.Random;
 
 public class DownloadImageAsync extends AsyncTask<String, Integer, Bitmap> {
     private Context context;
+    private ProgressDialog progressDialog;
 
     public DownloadImageAsync(Context context) {
         this.context = context;
+        progressDialog = new ProgressDialog(context);
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        this.progressDialog.setMessage("Downloading ...");
+        this.progressDialog.show();
     }
 
     @Override
@@ -67,8 +81,7 @@ public class DownloadImageAsync extends AsyncTask<String, Integer, Bitmap> {
         super.onPostExecute(bitmap);
         if (bitmap != null) {
             saveImage(bitmap);
-
-
+            progressDialog.dismiss();
         } else {
             Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show();
         }
@@ -83,7 +96,6 @@ public class DownloadImageAsync extends AsyncTask<String, Integer, Bitmap> {
         final String appDirectoryName = "TBStego";
         final File imageRoot = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES), appDirectoryName);
-
         imageRoot.mkdirs();
         final File file = new File(imageRoot, fileName);
         try {
@@ -113,8 +125,25 @@ public class DownloadImageAsync extends AsyncTask<String, Integer, Bitmap> {
         Toast.makeText(context,
                 file.getAbsolutePath(),
                 Toast.LENGTH_LONG).show();
-        ContentResolver cr = context.getContentResolver();
-        Uri insert = cr.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-        Toast.makeText(context, "The Image thumbnail created in Gallery ", Toast.LENGTH_LONG).show();
+        String PRIMARY_CHANNEL_ID = "primary_notification_channel";
+
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel("id", "an", NotificationManager.IMPORTANCE_LOW);
+            notificationChannel.setDescription("no sound");
+            notificationChannel.setSound(null, null);
+            notificationChannel.enableLights(false);
+            notificationChannel.setLightColor(Color.BLUE);
+            notificationChannel.enableVibration(false);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, "id")
+                .setSmallIcon(android.R.drawable.stat_sys_download)
+                .setContentTitle("Download")
+                .setContentText("Downloading Image Successfully")
+                .setDefaults(0)
+                .setAutoCancel(true);
+        notificationManager.notify(0, notificationBuilder.build());
     }
 }
